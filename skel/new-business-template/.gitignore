@@ -1,0 +1,42 @@
+# cc-company 横断ルール準拠の最低ライン
+# 詳細：cc-company/.company/ceo/notes/2026-05-10-env-example-rule-proposal.md
+
+# === 環境変数 ===
+.env
+.env.local
+.env.*.local
+
+# === 鍵・証明書 ===
+*.pem
+*.key
+service_account*.json
+*credentials*.json
+
+# === ビルド成果物・依存 ===
+node_modules/
+dist/
+build/
+.next/
+.nuxt/
+.output/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# === ローカル一時ファイル ===
+*.log
+*.sqlite
+*.db
+.DS_Store
+.idea/
+.vscode/
+
+# === Claude Code ローカル ===
+.claude/settings.local.json
+.claude/sessions/
+CLAUDE.local.md
+
+# === 収集データ（事業ごとに調整） ===
+data/
+logs/
+collected/

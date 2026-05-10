@@ -1,124 +1,94 @@
-# cc-company
+# cc-company — オーナーの仮想組織（本社）
 
-Claude Code で仮想組織を構築・運営するプラグイン。
+連続起業家として複数事業を並走運営するための、Claude Code ベースの **仮想組織本社**。
+取締役会（オーナー本人）から CEO（AI、Claude）へ唯一の窓口で命令、CEO は連続自走で事業を立ち上げ・目標設定・目標達成する。
 
-**[ドキュメント](https://shin-sibainu.github.io/cc-company/)** | **[English](https://shin-sibainu.github.io/cc-company/en/)**
-
-`/company` を実行すると、秘書があなた専用の窓口になります。3ステップで即運用開始。部署は使い方に合わせて自然に増えていきます。
-
-## インストール
+## 命令系統
 
 ```
-/plugin marketplace add Shin-sibainu/cc-company
-/plugin install company@cc-company
+取締役会（オーナー本人、最終意思決定者）
+   ↓ ビジョン・方針・案件
+CEO（AI、唯一の窓口、連続起業家として振る舞う）
+   ↓ タスク委任 / 事業管理
+部下（必要時のみ新設）/ 各事業（biz-code/ で submodule 内包）
 ```
 
-## コンセプト
+- **取締役会** = オーナー本人。北極星 KPI（売上 1000 万円 / 12 ヶ月）を設定
+- **CEO** = AI、唯一の対話相手。**連続起業家**（ロールモデル：小澤隆生氏）として 3 ミッション（① 立ち上げ壁打ち ② 目標設定 ③ 目標達成）を担う
+- **部下** = 同領域タスクが 1 週間 3 回以上 / 複数事業反復 / 取締役会の明示指示で新設（高い閾値）
+- **事業** = `biz-code/` 配下に git submodule で内包、各事業は独立リポ
 
-```
-あなた → 秘書（窓口） → 各部署（必要に応じて追加）
-```
-
-- **秘書**: 常に窓口。TODO管理、壁打ち、メモ、何でも相談OK
-- **部署**: 仕事が増えたら秘書が提案。リサーチ、PM、開発など
-
-最初は秘書だけ。シンプルに始めて、必要になったら部署を追加。
-
-## 使い方
-
-### 初回セットアップ（3ステップ）
-
-```
-> /company
-
-秘書: はじめまして！あなたの秘書になります。
-      まず、事業や活動を教えてください。
-あなた: フリーランスのWeb開発やってます
-
-秘書: 今の目標や困りごとは？
-あなた: SaaSを作って月10万目指してる。タスクが散らかるのが悩み
-
-→ .company/secretary/ が自動生成される（完了！）
-```
-
-### 日常の運営
-
-```
-> /company
-秘書: おはようございます！何かありますか？
-
-> 今日やること教えて
-秘書: 今日のTODOです:
-  - [ ] クライアントAへ見積もり送付
-  - [ ] LP設計書のレビュー
-
-> 競合サービスについて調べて
-秘書: 承知しました。調べますね。
-  → secretary/notes/2026-03-16-competitor-research.md に保存
-
-> 海外のトレンドも知りたい
-秘書: リサーチの依頼が増えていますね。
-      リサーチ部門を作りましょうか？
-あなた: 作って
-  → research/ が自動生成される
-```
-
-## 部署（必要に応じて追加）
-
-| 部署 | 担当領域 |
-|------|---------|
-| 秘書室 | TODO管理、壁打ち、メモ、相談（常設） |
-| PM | プロジェクト進捗、チケット管理 |
-| リサーチ | 市場調査、競合分析、技術調査 |
-| マーケティング | コンテンツ企画、SNS、キャンペーン |
-| 開発 | 技術ドキュメント、設計、デバッグ |
-| 経理 | 請求書、経費、売上管理 |
-| 営業 | クライアント管理、提案書 |
-| クリエイティブ | デザインブリーフ、ブランド管理 |
-| 人事 | 採用管理、チーム管理 |
-
-## 初期構成
-
-```
-.company/
-├── CLAUDE.md              ← 組織ルール
-└── secretary/
-    ├── CLAUDE.md           ← 秘書の振る舞い
-    ├── inbox/
-    ├── todos/
-    │   └── YYYY-MM-DD.md   ← 今日のTODO
-    └── notes/
-```
-
-## v1 からのアップグレード
-
-既存の v1 組織（CEO部門あり）がある場合、`/company` 実行時に自動でアップグレードを提案します。
-
-- CEO部門 → 廃止（秘書が直接振り分け）
-- レビュー部門 → 廃止（秘書が管理）
-- 使用中の部署 → そのまま引き継ぎ
-- 空の部署 → 削除
-
-## ファイル構成
+## 構成
 
 ```
 cc-company/
-├── .claude-plugin/
-│   └── marketplace.json
-├── plugins/
-│   └── company/
-│       ├── .claude-plugin/
-│       │   └── plugin.json
-│       └── skills/
-│           └── company/
-│               ├── SKILL.md
-│               └── references/
-│                   ├── departments.md
-│                   └── claude-md-template.md
-├── README.md
-└── LICENSE
+├── CLAUDE.md                    ← Claude Code が起動時に読む本社ルール（CEO モード起動）
+├── .company/
+│   ├── CLAUDE.md                本社固有ルール
+│   ├── ceo/
+│   │   ├── ceo-core.md          CEO の振る舞い（横断・再利用可能）
+│   │   ├── CLAUDE.md            CEO ワークスペース
+│   │   ├── inbox/  todos/  notes/
+│   │   └── notes/
+│   │       ├── mistakes.md      過去のミス Case（再発防止チェックリスト）
+│   │       ├── agent-playbook/  Plan/Explore/general-purpose の呼出ノウハウ
+│   │       ├── templates/       横断テンプレ（scripts / agents 定義）
+│   │       └── archive/         古いログのアーカイブ
+│   └── biz/                     事業の管理層（実コードは biz-code/）
+│       ├── drone-vibe-game/     Promptdrone 配達ゲーム（管理層）
+│       └── socialist-sns/       となりの席の労働ニュース（管理層）
+├── biz-code/                    ← 各事業を git submodule で内包
+│   ├── drone-vibe-game/         → kai-numb/drone-vibe-game.git
+│   └── socialist-sns-automation/→ kai-numb/tonari-news-bot.git
+├── skel/                        新規事業立ち上げ用スケルトン
+│   ├── new-business-template/   CLAUDE.md + .claude/ + scripts/ + .env.example + .gitignore
+│   └── new-business-checklist.md
+└── .claude/                     ralph-loop 等のローカル設定
 ```
+
+## 運用の核
+
+### 1. CEO の連続自走（24 時間運用）
+
+- 取締役会・CEO ともに **作業時間制約なし**
+- CEO は **「次は？」を待たず連続自走**、止まらず先送りせず判断スピード重視
+- 取締役会への質問は **複数選択肢 + CEO 推奨 + 判断材料同梱**（その場で判断できる形）
+
+### 2. 連続起業家の 8 原則（ロールモデル：小澤隆生氏）
+
+1. 「凡人」のスタンス：天才（取締役会）のビジョンを実装する官僚側として徹底する
+2. 凡事徹底：当たり前を徹底
+3. 再現性 3 ステップ：ゴール設定 → 仮説検証 → 徹底実行
+4. 決めて前に進める：判断保留が最大のリスク
+5. 変化を恐れない：振れ幅が大きいほど成長
+6. ワンフレーズで意識を変える：シンプルで「ワクワクする希望」
+7. 経験 = 過去のミス + 知見の蓄積（mistakes.md / agent-playbook / skel）
+8. 顧客の根源的欲求を見抜く
+
+### 3. 戦略順序（事業に共通）
+
+```
+実装 → 公開 → 反応観察 → 資本判断
+```
+
+完璧な準備より、まず動かして反応を見る（Lean Startup）。
+マネタイズ判断は反応データを見てから。
+
+### 4. 横断ルール
+
+- **env-example シークレット混入防止**：scripts/check-secrets.sh + .gitignore 最低ライン
+- **メモリ階層**：`~/.claude/projects/<id>/memory/` に feedback / user / project / reference タイプで蓄積
+- **質問の作法**：複数選択肢を提示、CEO 推奨明示、判断材料を同梱
+
+## 進行中の事業
+
+| 事業 | 状態 |
+|---|---|
+| **drone-vibe-game**（プロダクト名 **Promptdrone**） | MVP 実装中。v3 配達タイムアタック（3 軒に荷物を届ける）+ Rapier 物理 + Kenney CC0 アセット。F3 公開準備完了 |
+| **socialist-sns** | 5/11 ローンチ日。@tonari_news_jp、Automated 自動投稿（automation_kit）、scheduled_at に従って投稿開始 |
+
+詳細は `.company/biz/<事業名>/CLAUDE.md` を参照。
 
 ## ライセンス
 
-MIT
+個人開発・非公開（取締役会オーナー所有）。
