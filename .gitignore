@@ -1,6 +1,9 @@
 .claude/
 .company/
+
+# 各事業の管理層（メモ・TODO・決定ログ、機密保持）
+biz/*/notes/
+biz/*/todos/
+biz/*/inbox/
+
 node_modules/
-docs/.vitepress/cache/
-docs/.vitepress/dist/
-packages/dashboard/dist/

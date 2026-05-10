@@ -1,6 +1,7 @@
-[submodule "biz-code/drone-vibe-game"]
-	path = biz-code/drone-vibe-game
+[submodule "biz/drone-vibe-game/code"]
+	path = biz/drone-vibe-game/code
 	url = https://github.com/kai-numb/drone-vibe-game.git
-[submodule "biz-code/socialist-sns-automation"]
-	path = biz-code/socialist-sns-automation
+	branch = feat/v3-delivery-scene
+[submodule "biz/socialist-sns/code"]
+	path = biz/socialist-sns/code
 	url = https://github.com/kai-numb/tonari-news-bot.git

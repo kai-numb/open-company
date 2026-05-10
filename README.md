@@ -14,36 +14,42 @@ CEO（AI、唯一の窓口、連続起業家として振る舞う）
 ```
 
 - **取締役会** = オーナー本人。北極星 KPI（売上 1000 万円 / 12 ヶ月）を設定
-- **CEO** = AI、唯一の対話相手。**連続起業家**（ロールモデル：小澤隆生氏）として 3 ミッション（① 立ち上げ壁打ち ② 目標設定 ③ 目標達成）を担う
+- **CEO** = AI、唯一の対話相手。**連続起業家**（ロールモデル：小澤隆生氏）として 3 ミッション（① 新事業の立ち上げ ② 目標設定 ③ 目標達成）を担う
 - **部下** = 同領域タスクが 1 週間 3 回以上 / 複数事業反復 / 取締役会の明示指示で新設（高い閾値）
-- **事業** = `biz-code/` 配下に git submodule で内包、各事業は独立リポ
+- **事業** = `biz/<事業名>/` に **管理層 + 実コード（submodule）** が同居。実コードは独立リポ
 
 ## 構成
 
 ```
 cc-company/
-├── CLAUDE.md                    ← Claude Code が起動時に読む本社ルール（CEO モード起動）
-├── .company/
+├── CLAUDE.md                    ← Claude Code 起動時に読む本社ルール（CEO モード起動）
+├── README.md                    ← 本ファイル
+├── .company/                    ← CEO 横断ワークスペース（git 管理外）
 │   ├── CLAUDE.md                本社固有ルール
-│   ├── ceo/
-│   │   ├── ceo-core.md          CEO の振る舞い（横断・再利用可能）
-│   │   ├── CLAUDE.md            CEO ワークスペース
-│   │   ├── inbox/  todos/  notes/
-│   │   └── notes/
-│   │       ├── mistakes.md      過去のミス Case（再発防止チェックリスト）
-│   │       ├── agent-playbook/  Plan/Explore/general-purpose の呼出ノウハウ
-│   │       ├── templates/       横断テンプレ（scripts / agents 定義）
-│   │       └── archive/         古いログのアーカイブ
-│   └── biz/                     事業の管理層（実コードは biz-code/）
-│       ├── drone-vibe-game/     Promptdrone 配達ゲーム（管理層）
-│       └── socialist-sns/       となりの席の労働ニュース（管理層）
-├── biz-code/                    ← 各事業を git submodule で内包
-│   ├── drone-vibe-game/         → kai-numb/drone-vibe-game.git
-│   └── socialist-sns-automation/→ kai-numb/tonari-news-bot.git
+│   └── ceo/
+│       ├── ceo-core.md          CEO の振る舞い（横断・再利用可能）
+│       ├── CLAUDE.md            CEO ワークスペース定義
+│       ├── inbox/  todos/  notes/   横断ノート
+│       └── notes/
+│           ├── mistakes.md      過去のミス Case（再発防止チェックリスト）
+│           ├── agent-playbook/  Plan/Explore/general-purpose の呼出ノウハウ
+│           ├── templates/       横断テンプレ（scripts / agents 定義）
+│           └── archive/         古いログのアーカイブ
+├── biz/                         ← 各事業（管理層 + 実コード同居）
+│   ├── drone-vibe-game/         Promptdrone 配達ゲーム
+│   │   ├── CLAUDE.md             ← 事業固有ルール（git 管理対象）
+│   │   ├── notes/                ← 管理ノート（.gitignore 対象、機密保持）
+│   │   ├── todos/                ← TODO（.gitignore 対象）
+│   │   ├── inbox/                ← inbox（.gitignore 対象）
+│   │   └── code/                 ← submodule → kai-numb/drone-vibe-game.git
+│   └── socialist-sns/           となりの席の労働ニュース
+│       ├── CLAUDE.md
+│       ├── notes/  todos/  inbox/
+│       └── code/                ← submodule → kai-numb/tonari-news-bot.git
 ├── skel/                        新規事業立ち上げ用スケルトン
 │   ├── new-business-template/   CLAUDE.md + .claude/ + scripts/ + .env.example + .gitignore
 │   └── new-business-checklist.md
-└── .claude/                     ralph-loop 等のローカル設定
+└── .claude/                     ralph-loop 等のローカル設定（git 管理外）
 ```
 
 ## 運用の核
@@ -87,7 +93,7 @@ cc-company/
 | **drone-vibe-game**（プロダクト名 **Promptdrone**） | MVP 実装中。v3 配達タイムアタック（3 軒に荷物を届ける）+ Rapier 物理 + Kenney CC0 アセット。F3 公開準備完了 |
 | **socialist-sns** | 5/11 ローンチ日。@tonari_news_jp、Automated 自動投稿（automation_kit）、scheduled_at に従って投稿開始 |
 
-詳細は `.company/biz/<事業名>/CLAUDE.md` を参照。
+詳細は `biz/<事業名>/CLAUDE.md` を参照。
 
 ## ライセンス
 
