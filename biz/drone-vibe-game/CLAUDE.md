@@ -10,8 +10,8 @@
 - ゲームの面白さとデータ価値を並走させる。軍事路線（v2 / 2026-05-10 朝）は社会的イメージで破棄、配達路線（v3）に確定
 
 ## コードベース所在
-- ソース: `/Users/kaihasunuma/Desktop/Claude-test/businesses/drone-vibe-game/`（独立 git リポジトリ）
-- 本フォルダは事業の管理層（TODO・メモ・意思決定）のみを保持する
+- ソース: `code/`（submodule、独立 git リポジトリ：github.com/kai-numb/drone-vibe-game.git、branch=feat/v3-delivery-scene）
+- 本フォルダは事業の管理層（TODO・メモ・意思決定）+ コード（submodule）の同居
 
 ## ステータス
 - フェーズ: MVP v0.1（3D版が初回コミット済み、`a43bfa7`）

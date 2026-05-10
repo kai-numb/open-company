@@ -6,9 +6,9 @@ X（旧Twitter）で「社会主義の認知を生活実感の言葉で広げる
 完全自動投稿パイプライン（Anthropic API + Google Sheets + GitHub Actions + X API v2）を構築済み。
 
 ## 資産・コードベース所在
-- 戦略書・運用ドキュメント・assets: `/Users/kaihasunuma/Desktop/Claude-test/businesses/socialist-sns/`
-- 自動運用キット（独立 git リポ）: `/Users/kaihasunuma/Desktop/Claude-test/businesses/socialist-sns/automation_kit/`
-- 本フォルダは管理層のみ
+- 戦略書・運用ドキュメント・assets: `assets/`（同階層、git 管理外、機密保持）
+- 自動運用キット（独立 git リポ）: `code/`（submodule、github.com/kai-numb/tonari-news-bot.git、branch=main）
+- 本フォルダは管理層 + コード（submodule）+ アセットの同居
 
 ## アカウント設計
 - **ペルソナ**: 30代後半・都市部会社員。「活動家」ではなく「隣の席のちょっと詳しい人」
@@ -67,10 +67,10 @@ X（旧Twitter）で「社会主義の認知を生活実感の言葉で広げる
 - **事業固有**: 投稿原稿の編集・レビュー業務が発生したら、戦略書「7. デザインの文法 × X 適用マッピング」と「禁止事項リスト」に沿って判断する
 
 ## 関連ドキュメント（資産側）
-- `/Users/kaihasunuma/Desktop/Claude-test/businesses/socialist-sns/X運用戦略書.docx`（v1.0 / 2026年）
-- `/Users/kaihasunuma/Desktop/Claude-test/businesses/socialist-sns/プロフィール・固定ポスト清書.md`（v1.0 / 2026年5月）
-- `/Users/kaihasunuma/Desktop/Claude-test/businesses/socialist-sns/週次運用チェック.md`
-- `/Users/kaihasunuma/Desktop/Claude-test/businesses/socialist-sns/デザインの文法.txt`
-- `/Users/kaihasunuma/Desktop/Claude-test/businesses/socialist-sns/X投稿カレンダー_30日.xlsx`
-- `/Users/kaihasunuma/Desktop/Claude-test/businesses/socialist-sns/automation_kit/README.md`
-- `/Users/kaihasunuma/Desktop/Claude-test/businesses/socialist-sns/weekly_reports/週次レポート_2026-05-17.md`
+- `assets/X運用戦略書.docx`（v1.0 / 2026年）
+- `assets/プロフィール・固定ポスト清書.md`（v1.0 / 2026年5月）
+- `assets/週次運用チェック.md`
+- `assets/デザインの文法.txt`
+- `assets/X投稿カレンダー_30日.xlsx`
+- `code/README.md`（automation_kit、submodule 内）
+- `assets/weekly_reports/週次レポート_2026-05-17.md`

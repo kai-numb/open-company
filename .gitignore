@@ -7,3 +7,6 @@ biz/*/todos/
 biz/*/inbox/
 
 node_modules/
+
+# 事業の機密資産（戦略書・画像・運用ドキュメント、コードリポと分離）
+biz/*/assets/
