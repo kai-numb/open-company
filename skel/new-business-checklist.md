@@ -44,6 +44,8 @@ touch $biz_mgmt/notes/$(date +%Y-%m-%d)-decisions.md
 
 ## Phase 3：実コード側スケルトン作成（15 分）
 
+> **役割分担（B-1 確定 2026-05-11）**：`skel/new-business-template/` はプロジェクトの初期コピー対象。`.company/ceo/notes/templates/`（scripts/agents/skills）は横断テンプレの正本で、skel に同梱しない。立ち上げ時に templates から都度コピーする。詳細：`.company/ceo/ceo-core.md`「skel/ と templates/ の役割分担」。
+
 ```bash
 # 実コード側の場所（businesses/ または cc-company/biz-code/）に skel を複製
 src=/Users/kaihasunuma/Desktop/Claude-test/cc-company/skel/new-business-template
@@ -54,7 +56,7 @@ dst=/Users/kaihasunuma/Desktop/Claude-test/businesses/[事業名]
 mkdir -p $dst
 rsync -av --exclude='.git' $src/ $dst/
 
-# scripts/ に check-secrets.sh と install-hooks.sh を配置
+# 横断テンプレ正本から scripts/ を都度コピー（最新版を取得）
 cp cc-company/.company/ceo/notes/templates/scripts/check-secrets.sh $dst/scripts/
 cp cc-company/.company/ceo/notes/templates/scripts/install-hooks.sh $dst/scripts/
 chmod +x $dst/scripts/*.sh
