@@ -1,4 +1,4 @@
-# cc-company — オーナーの仮想組織（本社）
+# open-company — オーナーの仮想組織（本社）
 
 連続起業家として複数事業を並走運営するための、Claude Code ベースの **仮想組織本社**。
 取締役会（オーナー本人）から CEO（AI、Claude）へ唯一の窓口で命令、CEO は連続自走で事業を立ち上げ・目標設定・目標達成する。
@@ -26,7 +26,7 @@ CEO（AI、唯一の窓口、連続起業家として振る舞う）
 ## 構成
 
 ```
-cc-company/
+open-company/
 ├── CLAUDE.md                    ← Claude Code 起動時に読む本社ルール（CEO モード起動）
 ├── README.md                    ← 本ファイル
 ├── .company/                    ← CEO 横断ワークスペース（git 管理外）

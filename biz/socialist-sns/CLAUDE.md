@@ -60,7 +60,7 @@ X（旧Twitter）で「社会主義の認知を生活実感の言葉で広げる
 - `todos/` - 日次タスク管理（1日1ファイル）
 - `notes/` - 壁打ち・コンセプト・リサーチ・意思決定ログ
 
-## ルール（共通ルール `cc-company/.company/CLAUDE.md` を継承 + 事業固有）
+## ルール（共通ルール `open-company/.company/CLAUDE.md` を継承 + 事業固有）
 - 日次ファイル名: `YYYY-MM-DD.md`、トピックファイル名: `kebab-case.md`
 - 同日ファイルは追記、新規作成しない
 - 意思決定は `notes/YYYY-MM-DD-decisions.md`
