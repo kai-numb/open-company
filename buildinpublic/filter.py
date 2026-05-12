@@ -127,6 +127,22 @@ def _keyword_blocked(text: str) -> str | None:
 
 # ---------- パブリック API ----------
 
+def _strip_commit_noise(text: str) -> str:
+    """git commit メッセージの定型 footer / 機械生成行を除去してからフィルタする。
+
+    対象：
+      - `Co-Authored-By: <name> <email>`（GitHub 慣習、システムメールアドレスで誤検知される）
+      - `Signed-off-by: <name> <email>`（DCO）
+    """
+    cleaned: list[str] = []
+    for line in text.splitlines():
+        stripped = line.lstrip()
+        if stripped.startswith(("Co-Authored-By:", "Co-authored-by:", "Signed-off-by:")):
+            continue
+        cleaned.append(line)
+    return "\n".join(cleaned)
+
+
 def is_blocked(text: str, path: str | None) -> str | None:
     """ブロック理由を返す。OK なら None。
 
@@ -135,10 +151,11 @@ def is_blocked(text: str, path: str | None) -> str | None:
     reason = _path_blocked(path)
     if reason:
         return reason
-    reason = _secret_detected(text)
+    text_clean = _strip_commit_noise(text)
+    reason = _secret_detected(text_clean)
     if reason:
         return reason
-    reason = _keyword_blocked(text)
+    reason = _keyword_blocked(text_clean)
     if reason:
         return reason
     return None

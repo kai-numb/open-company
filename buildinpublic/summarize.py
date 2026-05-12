@@ -79,7 +79,7 @@ def generate_thread(
             {"index": 3, "text": "[dry-run preview] 本番では Claude API でスレッド生成"},
         ]
 
-    client = Anthropic()
+    client = Anthropic(max_retries=5)   # 529 Overloaded / 429 等のリトライを多めに
     resp = client.messages.create(
         model=MODEL,
         max_tokens=2048,

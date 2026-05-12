@@ -148,6 +148,24 @@ class TestAllowedContent:
         text = "設計議論：tweepy の OAuth1.0a を選ぶ理由は v2 API の write エンドポイントが OAuth1 必要だから。"
         assert is_blocked(text, "/repo/biz/x/notes/2026-05-11-t.md") is None
 
+    def test_co_authored_by_footer_ignored(self) -> None:
+        # git commit の Co-Authored-By footer はメール regex で誤検知させない
+        text = (
+            "feat(buildinpublic): 新規モジュールを追加\n"
+            "\n"
+            "Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>"
+        )
+        assert is_blocked(text, "/repo/biz/x/notes/2026-05-11-t.md") is None
+
+    def test_signed_off_by_footer_ignored(self) -> None:
+        text = "fix: バグ修正\n\nSigned-off-by: Dev <dev@example.com>"
+        assert is_blocked(text, "/repo/biz/x/notes/2026-05-11-t.md") is None
+
+    def test_real_email_still_blocked(self) -> None:
+        # Co-Authored-By 以外の本文内メールは引き続きブロック
+        text = "問い合わせは user@example.com まで"
+        assert is_blocked(text, "/repo/biz/x/notes/2026-05-11-t.md") is not None
+
 
 # ---------- filter_items の振る舞い ----------
 
