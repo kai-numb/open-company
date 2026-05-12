@@ -10,3 +10,11 @@ node_modules/
 
 # 事業の機密資産（戦略書・画像・運用ドキュメント、コードリポと分離）
 biz/*/assets/
+
+# buildinpublic: 投稿ログとローカル venv
+buildinpublic/logs/
+buildinpublic/.venv/
+buildinpublic/__pycache__/
+buildinpublic/**/__pycache__/
+buildinpublic/.pytest_cache/
+.pytest_cache/

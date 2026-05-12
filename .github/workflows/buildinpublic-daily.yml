@@ -1,0 +1,44 @@
+name: buildinpublic-daily
+
+on:
+  schedule:
+    # 13:00 UTC = 22:00 JST 毎日
+    - cron: "0 13 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: buildinpublic-daily
+  cancel-in-progress: false
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0    # git log を遡るため履歴を取る
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install dependencies
+        run: pip install -r buildinpublic/requirements.txt
+
+      - name: Run pipeline
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          X_API_KEY_BIP: ${{ secrets.X_API_KEY_BIP }}
+          X_API_SECRET_BIP: ${{ secrets.X_API_SECRET_BIP }}
+          X_ACCESS_TOKEN_BIP: ${{ secrets.X_ACCESS_TOKEN_BIP }}
+          X_ACCESS_SECRET_BIP: ${{ secrets.X_ACCESS_SECRET_BIP }}
+          X_HANDLE_BIP: ${{ vars.X_HANDLE_BIP || 'open_company_dev' }}
+          DRY_RUN: ${{ vars.DRY_RUN || 'true' }}
+          PYTHONPATH: ${{ github.workspace }}
+        run: python -m buildinpublic.run --date "$(date -u +%F)"
