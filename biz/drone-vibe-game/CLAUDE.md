@@ -14,18 +14,10 @@
 - 本フォルダは事業の管理層（TODO・メモ・意思決定）+ コード（submodule）の同居
 
 ## ステータス
-- フェーズ: MVP v0.1（3D版が初回コミット済み、`a43bfa7`）
-- 次のマイルストーン: MVPスコープ確定（期限 2026-05-16）
+最新は `notes/` の最新 decisions と `todos/` を参照。
 
-## フォルダ構成
-- `inbox/` - 未整理のクイックキャプチャ
-- `todos/` - 日次タスク管理（1日1ファイル）
-- `notes/` - 壁打ち・コンセプト・リサーチ・意思決定ログ
-
-## ルール（共通ルール `open-company/.company/CLAUDE.md` を継承）
-- 日次ファイル名: `YYYY-MM-DD.md`、トピックファイル名: `kebab-case.md`
-- 同日ファイルは追記、新規作成しない
-- 意思決定は `notes/YYYY-MM-DD-decisions.md`
+## ルール
+共通ルールは上位 `open-company/CLAUDE.md` および `.company/CLAUDE.md` 継承。意思決定は `notes/YYYY-MM-DD-decisions.md`。
 
 ## 関連ノート
 - コンセプト v3: `notes/drone-vibe-coding-game.md`
