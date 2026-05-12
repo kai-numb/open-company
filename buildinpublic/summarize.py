@@ -6,11 +6,13 @@ import os
 from datetime import date
 from pathlib import Path
 
-from anthropic import Anthropic
+from anthropic import Anthropic, APIStatusError
 
 from .collect import ProgressItem
 
-MODEL = "claude-opus-4-7"
+MODEL_PRIMARY = "claude-opus-4-7"
+MODEL_FALLBACK = "claude-sonnet-4-6"
+MODEL = MODEL_PRIMARY   # 後方互換
 SYSTEM_PROMPT_PATH = Path(__file__).parent / "prompts" / "system.md"
 MAX_INPUT_CHARS_PER_ITEM = 2000
 
@@ -80,15 +82,29 @@ def generate_thread(
         ]
 
     client = Anthropic(max_retries=5)   # 529 Overloaded / 429 等のリトライを多めに
-    resp = client.messages.create(
-        model=MODEL,
-        max_tokens=2048,
-        system=system_prompt,
-        messages=[{"role": "user", "content": user_msg}],
-    )
-    text = "".join(
-        block.text for block in resp.content if getattr(block, "type", None) == "text"
-    )
+    text = ""
+    last_err: Exception | None = None
+    for model in (MODEL_PRIMARY, MODEL_FALLBACK):
+        try:
+            resp = client.messages.create(
+                model=model,
+                max_tokens=2048,
+                system=system_prompt,
+                messages=[{"role": "user", "content": user_msg}],
+            )
+            text = "".join(
+                block.text for block in resp.content if getattr(block, "type", None) == "text"
+            )
+            print(f"[summarize] model used: {model}")
+            break
+        except APIStatusError as e:
+            print(f"[summarize] {model} failed: {e}")
+            last_err = e
+            continue
+    if not text:
+        if last_err is not None:
+            raise last_err
+        raise RuntimeError("no model produced output")
     thread = _extract_json_array(text)
 
     # 簡易バリデーション：各要素は {"index": int, "text": str}

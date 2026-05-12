@@ -119,7 +119,23 @@ class TestKeywordBlock:
         assert is_blocked("戦略書を読んだ", "/repo/biz/x/notes/2026-05-11-t.md") is not None
 
     def test_confidential_blocked(self) -> None:
-        assert is_blocked("これは未公開", "/repo/biz/x/notes/2026-05-11-t.md") is not None
+        assert is_blocked("機密文書を更新した", "/repo/biz/x/notes/2026-05-11-t.md") is not None
+
+    def test_unreleased_strategy_blocked(self) -> None:
+        assert is_blocked("未公開戦略を共有", "/repo/biz/x/notes/2026-05-11-t.md") is not None
+
+    def test_confidential_information_english_blocked(self) -> None:
+        assert is_blocked("contains confidential information", "/repo/biz/x/notes/2026-05-11-t.md") is not None
+
+    def test_security_filter_term_allowed(self) -> None:
+        # 「機密フィルタ」「機密検出」「機密スキャン」等の技術用語は通す
+        text = "機密フィルタを実装して機密漏れを防ぐ仕組みを作った"
+        # 「機密漏れ」は今は通る (機密＋具体物 regex に該当しないため)。これは意図通り
+        assert is_blocked(text, "/repo/biz/x/notes/2026-05-11-t.md") is None
+
+    def test_未公開_alone_allowed(self) -> None:
+        # 「未公開機能」「未公開 API」等の単独「未公開」は通す
+        assert is_blocked("未公開機能の動作確認", "/repo/biz/x/notes/2026-05-11-t.md") is None
 
     def test_mistakes_ref_blocked(self) -> None:
         assert is_blocked("mistakes.md に追記", "/repo/biz/x/notes/2026-05-11-t.md") is not None

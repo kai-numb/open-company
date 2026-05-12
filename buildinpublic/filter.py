@@ -104,13 +104,18 @@ _BLOCK_KEYWORDS_RE: tuple[tuple[str, re.Pattern[str]], ...] = (
     ("personal: email",
      re.compile(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}")),
 
-    # 未公開戦略
+    # 未公開戦略（technical な「機密フィルタ」「機密検出」等の用語は通すため、機密＋具体物の組合せに限定）
     ("unreleased: 戦略書",
      re.compile(r"戦略書")),
     ("unreleased: assets path",
      re.compile(r"\bassets/")),
-    ("unreleased: 未公開/機密/confidential",
-     re.compile(r"未公開|機密|confidential", re.IGNORECASE)),
+    ("unreleased: 機密物 / 未公開戦略 / confidential info",
+     re.compile(
+         r"機密(情報|文書|事項|資料|データ|扱い|保護|区分)"
+         r"|未公開(戦略|資料|情報|文書|プラン|計画)"
+         r"|confidential\s+(information|document|data|material)",
+         re.IGNORECASE,
+     )),
 
     # 取締役会名指しの反省
     ("reflection: mistakes.md ref",
