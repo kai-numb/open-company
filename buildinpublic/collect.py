@@ -127,21 +127,64 @@ def _scan_dated_notes(notes_dir: Path, source_label: str, target: date) -> list[
     return items
 
 
+def _git_log_root_since(repo_root: Path, since: datetime) -> list[ProgressItem]:
+    """親リポ自身の git log を集約。submodule HEAD 更新 commit からも進捗が読める。"""
+    since_iso = since.astimezone(timezone.utc).isoformat()
+    fmt = "%H%x1f%aI%x1f%s%x1f%b%x1e"
+    raw = _safe_run(
+        ["git", "log", f"--since={since_iso}", f"--pretty=format:{fmt}"],
+        cwd=repo_root,
+    )
+    if not raw.strip():
+        return []
+    items: list[ProgressItem] = []
+    for record in raw.split("\x1e"):
+        record = record.strip()
+        if not record:
+            continue
+        parts = record.split("\x1f")
+        if len(parts) < 3:
+            continue
+        iso, subject = parts[1], parts[2]
+        body = parts[3] if len(parts) > 3 else ""
+        try:
+            ts = datetime.fromisoformat(iso)
+        except ValueError:
+            continue
+        items.append(
+            ProgressItem(
+                source="git:open-company",
+                timestamp=ts,
+                title=subject.strip(),
+                body=body.strip(),
+                path=None,
+            )
+        )
+    return items
+
+
 def collect_since(since: datetime, repo_root: Path, target_date: date | None = None) -> list[ProgressItem]:
     """since 以降の git log と target_date の notes を集める。
 
     target_date 省略時は since の日付を使う。
+    集約ソース（GitHub Actions 環境では 1 つ目のみが実質的に効く、ローカルでは全部効く）：
+      1. 親リポ open-company 自身の git log（submodule HEAD 更新 commit から事業横断の動きが読める）
+      2. 各 submodule (biz/<事業>/code/) の git log — submodule が clone されている時のみ
+      3. biz/<事業>/notes/、.company/ceo/notes/ — .gitignore 対象、ローカル運用時のみ
     """
     if target_date is None:
         target_date = since.astimezone(timezone.utc).date()
 
     items: list[ProgressItem] = []
 
-    # git log from each submodule
+    # 親リポ自身の git log（Actions 環境で唯一安定して取れるソース）
+    items.extend(_git_log_root_since(repo_root, since))
+
+    # 各 submodule の git log（clone されていれば）
     for sub in _list_submodules(repo_root):
         items.extend(_git_log_since(sub, since))
 
-    # biz/<name>/notes/
+    # biz/<name>/notes/ — .gitignore 対象、ローカル運用時のみ
     biz_dir = repo_root / "biz"
     if biz_dir.is_dir():
         for biz_path in sorted(biz_dir.iterdir()):
@@ -150,7 +193,7 @@ def collect_since(since: datetime, repo_root: Path, target_date: date | None = N
                 _scan_dated_notes(notes, f"notes:{biz_path.name}", target_date)
             )
 
-    # .company/ceo/notes/ — フィルタを厳しく通すゾーン（path は ceo/notes/ を含むので段 3 で再評価）
+    # .company/ceo/notes/ — .gitignore 対象、ローカル運用時のみ
     ceo_notes = repo_root / ".company" / "ceo" / "notes"
     items.extend(_scan_dated_notes(ceo_notes, "ceo-notes", target_date))
 

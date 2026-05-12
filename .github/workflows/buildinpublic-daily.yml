@@ -20,8 +20,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          submodules: false   # 各 biz/<事業>/code/ は private な別リポで GITHUB_TOKEN では clone 不可。当面 notes/ のみソースに
-          fetch-depth: 1
+          submodules: false   # 各 biz/<事業>/code/ は private な別リポで GITHUB_TOKEN では clone 不可
+          fetch-depth: 200    # 親リポの git log を直近 24h 以上遡れる量に。20 commit/日ペースでも 10 日分カバー
 
       - uses: actions/setup-python@v5
         with:
