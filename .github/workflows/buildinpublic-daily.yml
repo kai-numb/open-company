@@ -20,8 +20,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          submodules: recursive
-          fetch-depth: 0    # git log を遡るため履歴を取る
+          submodules: false   # 各 biz/<事業>/code/ は private な別リポで GITHUB_TOKEN では clone 不可。当面 notes/ のみソースに
+          fetch-depth: 1
 
       - uses: actions/setup-python@v5
         with:
