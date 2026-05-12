@@ -182,6 +182,37 @@ class TestAllowedContent:
         text = "問い合わせは user@example.com まで"
         assert is_blocked(text, "/repo/biz/x/notes/2026-05-11-t.md") is not None
 
+    def test_buildinpublic_meta_commit_allowed(self) -> None:
+        # filter 自身を語るコミットは構造的に「未公開戦略」等を含むため、段 3 をスキップする。
+        # 5/12 22:30 JST 失敗の根本原因に対する自己参照偽陽性対策。
+        text = (
+            "fix(buildinpublic): 機密キーワードの偽陽性削減 + Sonnet フォールバック\n"
+            "\n"
+            "「機密」「未公開」を「機密+具体物」「未公開戦略」等の組合せに絞った。\n"
+        )
+        assert is_blocked(text, None) is None
+
+    def test_buildinpublic_meta_still_blocks_secrets(self) -> None:
+        # buildinpublic スコープでも段 2 (secret) は通常通りブロック。
+        text = (
+            "fix(buildinpublic): debug\n"
+            "\n"
+            "誤って sk-ant-api03-AbCdEfGhIjKlMnOpQrStUvWxYz0123456789AbCdEfGh を貼った"
+        )
+        assert is_blocked(text, None) is not None
+
+    def test_buildinpublic_meta_still_blocks_path(self) -> None:
+        # buildinpublic スコープでも段 1 (path) は通常通りブロック。
+        text = "fix(buildinpublic): asset を更新"
+        assert is_blocked(
+            text, "/repo/biz/socialist-sns/assets/X運用戦略書.docx"
+        ) is not None
+
+    def test_non_buildinpublic_meta_still_blocks_unreleased_strategy(self) -> None:
+        # buildinpublic 以外のスコープでは「未公開戦略」は引き続き reject。
+        text = "feat(socialist-sns): 未公開戦略を共有"
+        assert is_blocked(text, "/repo/biz/x/notes/2026-05-11-t.md") is not None
+
 
 # ---------- filter_items の振る舞い ----------
 

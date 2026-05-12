@@ -148,10 +148,22 @@ def _strip_commit_noise(text: str) -> str:
     return "\n".join(cleaned)
 
 
+def _is_buildinpublic_meta(text: str) -> bool:
+    """buildinpublic スコープのコミットメッセージかを 1 行目で判定。
+
+    `fix(buildinpublic): ...` のような自己言及 commit は、構造的に「機密キーワード」
+    「未公開戦略」等の語を含むため段 3 で自己参照偽陽性を起こす。段 1 (path) と
+    段 2 (secret) は通常通り評価し、段 3 のみスキップする。
+    """
+    first_line = text.split("\n", 1)[0] if text else ""
+    return "(buildinpublic)" in first_line
+
+
 def is_blocked(text: str, path: str | None) -> str | None:
     """ブロック理由を返す。OK なら None。
 
     順序：段 1 (path) → 段 2 (secret) → 段 3 (keyword)。
+    buildinpublic 自身のメタ commit は段 3 のみスキップする。
     """
     reason = _path_blocked(path)
     if reason:
@@ -160,6 +172,8 @@ def is_blocked(text: str, path: str | None) -> str | None:
     reason = _secret_detected(text_clean)
     if reason:
         return reason
+    if _is_buildinpublic_meta(text_clean):
+        return None
     reason = _keyword_blocked(text_clean)
     if reason:
         return reason
