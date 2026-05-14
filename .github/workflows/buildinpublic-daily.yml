@@ -20,8 +20,20 @@ jobs:
     steps:
       - uses: actions/checkout@v6
         with:
-          submodules: false   # 各 biz/<事業>/code/ は private な別リポで GITHUB_TOKEN では clone 不可
-          fetch-depth: 200    # 親リポの git log を直近 24h 以上遡れる量に。20 commit/日ペースでも 10 日分カバー
+          submodules: false       # まず親リポだけ取得（PAT が無くても確実に成功）
+          fetch-depth: 200
+
+      - name: Fetch submodules (optional, requires SUBMODULE_PAT)
+        env:
+          SUBMODULE_PAT: ${{ secrets.SUBMODULE_PAT }}
+        run: |
+          if [ -n "$SUBMODULE_PAT" ]; then
+            echo "[submodule] SUBMODULE_PAT detected, fetching submodules"
+            git config --global url."https://x-access-token:${SUBMODULE_PAT}@github.com/".insteadOf "https://github.com/"
+            git submodule update --init --recursive --depth=200 || echo "[submodule] fetch failed, continuing with parent repo only"
+          else
+            echo "[submodule] SUBMODULE_PAT not set, skipping submodule fetch (parent repo git log only)"
+          fi
 
       - uses: actions/setup-python@v6
         with:
