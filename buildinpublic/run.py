@@ -59,6 +59,13 @@ def main(argv: list[str] | None = None) -> int:
     items = collect_since(since=since, repo_root=REPO_ROOT, target_date=target_date)
     print(f"[buildinpublic] collected {len(items)} item(s)")
 
+    # fail-soft: 集約 0 件なら過去 7 日まで遡って fallback (動きが薄い日も投稿継続)
+    if not items:
+        fallback_since = since - timedelta(days=7)
+        print(f"[buildinpublic] fallback: re-collecting since {fallback_since.isoformat()} (last 7 days)")
+        items = collect_since(since=fallback_since, repo_root=REPO_ROOT, target_date=target_date)
+        print(f"[buildinpublic] fallback collected {len(items)} item(s)")
+
     filtered = filter_items(items)
     print(f"[buildinpublic] passed={filtered.passed_count} rejected={filtered.rejected_count}")
     for item, reason in filtered.rejected:
